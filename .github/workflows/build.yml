@@ -28,6 +28,6 @@ jobs:
         distribution: 'corretto'
         cache: maven
     - name: Create database with docker-compose
-      run: docker-compose up -d
+      run: docker-compose up -d --build
     - name: Build with Maven
       run: mvn --file pom.xml clean install
