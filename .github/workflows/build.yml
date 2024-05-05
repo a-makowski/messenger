@@ -11,8 +11,11 @@ name: Build messenger app
 on:
   workflow_dispatch:
   push:
+    branches-ignore:
+      - 'dependabot/**'
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
