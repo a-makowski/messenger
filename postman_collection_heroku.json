@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "c21c1a49-f713-45c4-a96e-2bb2863c33e3",
-		"name": "Messenger",
+		"name": "Messenger - heroku",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29983581"
 	},
@@ -26,9 +26,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user/register",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"register"
@@ -54,9 +53,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/authenticate",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"authenticate"
 							]
@@ -91,9 +89,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user/password",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"password"
@@ -129,9 +126,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user"
 							]
@@ -157,9 +153,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user"
 							]
@@ -185,9 +180,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user/12",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"12"
@@ -226,9 +220,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user/search",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"search"
@@ -260,9 +253,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user/contacts/add/1",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"contacts",
@@ -291,9 +283,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user/contacts/delete/2",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"contacts",
@@ -322,9 +313,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/user/contacts",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"user",
 								"contacts"
@@ -365,9 +355,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/message",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"message"
 							]
@@ -402,9 +391,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/message/1",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"message",
 								"1"
@@ -431,9 +419,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/message/flag/1",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"message",
 								"flag",
@@ -470,9 +457,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/message/2",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"message",
 								"2"
@@ -504,9 +490,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/chat/all",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"chat",
 								"all"
@@ -533,9 +518,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/chat/2",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"chat",
 								"2"
@@ -562,9 +546,8 @@
 						"url": {
 							"raw": "https://messenger-00398fef4475.herokuapp.com/chat/1",
 							"host": [
-								"localhost"
+								"https://messenger-00398fef4475.herokuapp.com"
 							],
-							"port": "8080",
 							"path": [
 								"chat",
 								"1"
