@@ -24,7 +24,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/user/register",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user/register",
 							"host": [
 								"localhost"
 							],
@@ -52,7 +52,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/authenticate",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/authenticate",
 							"host": [
 								"localhost"
 							],
@@ -89,7 +89,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/user/password",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user/password",
 							"host": [
 								"localhost"
 							],
@@ -127,7 +127,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/user",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user",
 							"host": [
 								"localhost"
 							],
@@ -155,7 +155,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/user",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user",
 							"host": [
 								"localhost"
 							],
@@ -183,7 +183,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/user/12",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user/12",
 							"host": [
 								"localhost"
 							],
@@ -224,7 +224,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/user/search",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user/search",
 							"host": [
 								"localhost"
 							],
@@ -258,7 +258,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/user/contacts/add/1",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user/contacts/add/1",
 							"host": [
 								"localhost"
 							],
@@ -289,7 +289,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/user/contacts/delete/2",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user/contacts/delete/2",
 							"host": [
 								"localhost"
 							],
@@ -320,7 +320,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/user/contacts",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/user/contacts",
 							"host": [
 								"localhost"
 							],
@@ -363,7 +363,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/message",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/message",
 							"host": [
 								"localhost"
 							],
@@ -400,7 +400,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/message/1",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/message/1",
 							"host": [
 								"localhost"
 							],
@@ -429,7 +429,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/message/flag/1",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/message/flag/1",
 							"host": [
 								"localhost"
 							],
@@ -468,7 +468,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/message/2",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/message/2",
 							"host": [
 								"localhost"
 							],
@@ -502,7 +502,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/chat/all",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/chat/all",
 							"host": [
 								"localhost"
 							],
@@ -531,7 +531,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/chat/2",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/chat/2",
 							"host": [
 								"localhost"
 							],
@@ -560,7 +560,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/chat/1",
+							"raw": "https://messenger-00398fef4475.herokuapp.com/chat/1",
 							"host": [
 								"localhost"
 							],
