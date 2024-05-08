@@ -33,4 +33,4 @@ Application is deployed on [Heroku](https://www.heroku.com/) and you can try it 
 
    - After successfully starting the container, you need to start the application with the dev-mysql profile. To start it, use this command in a root folder.
 
-           mvn clean spring-boot:run -Dspring.profiles.active=dev-mysql
+           mvn clean spring-boot:run -Dspring-boot.run.profiles=dev-mysql
