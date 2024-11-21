@@ -1,36 +1,36 @@
 package com.makowski.messenger.remover;
 
-import java.time.LocalDate;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.makowski.messenger.entity.Message;
 import com.makowski.messenger.repository.MessageRepository;
-import com.makowski.messenger.service.ChatService;
+import com.makowski.messenger.service.MessageService;
 
 @Component
 public class OldMessagesRemover {
 
+    private static final int PAGE_SIZE = 100;
     private MessageRepository messageRepository;
-    private ChatService chatService;
+    private MessageService messageService;
 
-    @Scheduled(cron = "0 0 0 * * *")                                            
+    @Scheduled(cron = "0 0 0 * * *")
     public void deleteOldMessages() {
-        for(Long i = 1L; i<= messageRepository.count(); i++) {
-            Optional<Message> message = messageRepository.findById(i);
-            if (message.isPresent()) {
-                Message checkMessage = message.get();
-                if (!checkMessage.isPermanent()) {
-                    LocalDate expireDate = checkMessage.getDateTime().toLocalDate().plusDays(7);
-                    if(expireDate.isBefore(LocalDate.now())) {
-                        Long chatId = checkMessage.getChat().getId();
-                        messageRepository.deleteById(i);
-                        chatService.deleteChatIfEmpty(chatId);
-                    }
-                }
+        LocalDateTime expireDate = LocalDateTime.now().minusDays(7);
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<Message> page;
+
+        do {
+            page = messageRepository.findByPermanentFalseAndDateTimeBefore(expireDate, pageable);
+            for (Message message : page.getContent()) {
+                messageService.deleteMessage(message.getId());
             }
-        }
+            pageable = page.nextPageable();
+        } while (page.hasNext());
     }
 }
