@@ -34,8 +34,8 @@ public class ChatService {
             else throw new InvalidRequestException();
     }
 
-    public Chat saveChat(Chat chat) {
-        return chatRepository.save(chat);
+    public void saveChat(Chat chat) {
+        chatRepository.save(chat);
     }
                                                                    
     public void deleteChatIfExist(Long chatId) {                  
