@@ -1,4 +1,4 @@
-package com.makowski.messenger;
+package com.makowski.messenger.exception;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,15 +14,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import com.makowski.messenger.exception.AccessDeniedException;
-import com.makowski.messenger.exception.EmptyListException;
-import com.makowski.messenger.exception.EntityNotFoundException;
-import com.makowski.messenger.exception.ErrorResponse;
-import com.makowski.messenger.exception.InvalidRequestException;
-import com.makowski.messenger.exception.NoReceiversException;
-import com.makowski.messenger.exception.NoSuchUserException;
-import com.makowski.messenger.exception.PasswordNotEqualsException;
 
 @ControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
