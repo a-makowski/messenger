@@ -27,9 +27,7 @@ public class OldMessagesRemover {
 
         do {
             page = messageRepository.findByPermanentFalseAndDateTimeBefore(expireDate, pageable);
-            for (Message message : page.getContent()) {
-                messageService.deleteMessage(message.getId());
-            }
+            page.getContent().forEach(message -> messageService.deleteMessage(message.getId()));
             pageable = page.nextPageable();
         } while (page.hasNext());
     }
