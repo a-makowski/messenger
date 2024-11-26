@@ -34,11 +34,9 @@ public class UserService {
     
 
     public UserDto createUser(User user) {
-        for (User existingUser : userRepository.findAll())
-            if (existingUser.getUsername().equalsIgnoreCase(user.getUsername())) throw new InvalidRequestException(user.getUsername());
-        String password = user.getPassword();
-        String encode = bCryptPasswordEncoder.encode(password);
-        user.setPassword(encode);
+        if (userRepository.existsByUsernameIgnoreCase(user.getUsername()))
+            throw new InvalidRequestException(user.getUsername());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         saveUser(user);
         return getUserDto(user.getId());
     }
@@ -54,7 +52,7 @@ public class UserService {
     public User findByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isPresent()) return user.get();
-            else throw new NoSuchUserException();
+            else throw new EntityNotFoundException(username, User.class);
     }
 
     public User getLoggedUser() {
@@ -65,7 +63,8 @@ public class UserService {
         User updatedUser = getLoggedUser();
         updatedUser.setFirstName(userDto.getFirstName());
         updatedUser.setSurname(userDto.getSurname());
-        return userRepository.save(updatedUser);
+        saveUser(updatedUser);
+        return updatedUser;
     }
 
     public void changePassword(PasswordDto password) {
@@ -73,7 +72,7 @@ public class UserService {
         if (bCryptPasswordEncoder.matches(password.getOldPassword(), user.getPassword())) {
             if (password.getNewPassword().equals(password.getRepeatNewPassword())) {
                 user.setPassword(bCryptPasswordEncoder.encode(password.getNewPassword()));
-                userRepository.save(user);
+                saveUser(user);
             } else throw new PasswordNotEqualsException();
         } else throw new AccessDeniedException();
     }
@@ -84,7 +83,7 @@ public class UserService {
 
     public User getUser(Long id) {
         return userRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(id, User.class ));
+            .orElseThrow(() -> new EntityNotFoundException(id, User.class));
     }
 
     public UserDto getUserDto(Long id) {
@@ -109,7 +108,7 @@ public class UserService {
     }
 
     public Set<UserDto> findUser(String phrase) {
-        if (phrase.isBlank() || phrase.isEmpty()) throw new InvalidRequestException();
+        if (phrase.isBlank() || phrase.isEmpty()) throw new InvalidRequestException("Search phrase cannot be empty");
         Set<UserDto> results = new HashSet<>();    
         for (User user : userRepository.findAll()) {
             String name = user.getUsername() + " " + user.getFirstName() + " " + user.getSurname();
@@ -127,7 +126,7 @@ public class UserService {
             if (!user.getId().equals(contactId)) {
                 user.getContactList().add(contactId);
                 saveUser(user);
-            } else throw new InvalidRequestException();
+            } else throw new InvalidRequestException("Owner of the list cannot be on the list");
         } else throw new EntityNotFoundException(contactId, User.class);
         return getMyContactList();
     }
@@ -139,7 +138,7 @@ public class UserService {
                 user.getContactList().remove(contactId);
                 saveUser(user);
                 return getMyContactList();
-            } else throw new InvalidRequestException();
+            } else throw new InvalidRequestException("There is no such user on contact list");
         } else throw new EntityNotFoundException(contactId, User.class);
     }
 
