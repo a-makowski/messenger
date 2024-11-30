@@ -8,7 +8,6 @@ import com.makowski.messenger.dto.ChatDto;
 import com.makowski.messenger.entity.Chat;
 import com.makowski.messenger.exception.AccessDeniedException;
 import com.makowski.messenger.exception.EntityNotFoundException;
-import com.makowski.messenger.exception.InvalidRequestException;
 import com.makowski.messenger.repository.ChatRepository;
 
 import lombok.AllArgsConstructor;
@@ -31,7 +30,7 @@ public class ChatService {
 
     public Chat getMyChat(Long chatId) {
         if (isItProperUser(chatId)) return getChat(chatId);
-            else throw new InvalidRequestException();
+            else throw new AccessDeniedException();
     }
 
     public void saveChat(Chat chat) {
@@ -40,7 +39,8 @@ public class ChatService {
                                                                    
     public void deleteChatIfExist(Long chatId) {                  
         if (chatRepository.existsById(chatId)) {
-            if (isItProperUser(chatId)) deleteChat(chatId);         
+            if (isItProperUser(chatId)) deleteChat(chatId);
+                else throw new AccessDeniedException();
         } else throw new EntityNotFoundException(chatId, Chat.class);    
     }
 
@@ -55,7 +55,6 @@ public class ChatService {
     }
 
     public boolean isItProperUser (Long chatId) {
-        if (getChat(chatId).getMembers().contains(userService.getLoggedUser())) return true;
-            else throw new AccessDeniedException();                                           
+        return getChat(chatId).getMembers().contains(userService.getLoggedUser());
     }
 }
