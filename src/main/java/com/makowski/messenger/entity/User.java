@@ -1,6 +1,5 @@
 package com.makowski.messenger.entity;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,10 +19,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "users")
 public class User {
     
@@ -55,7 +56,7 @@ public class User {
 
     @JsonIgnore
     @Column(name = "contact_list")
-    private Set<Long> contactList = new HashSet<>();
+    private Set<Long> contactList;
 
     @JsonIgnore
     @ManyToMany
@@ -66,4 +67,3 @@ public class User {
     )
     private List<Chat> chats;
 }
- 

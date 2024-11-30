@@ -37,6 +37,7 @@ public class UserService {
         if (userRepository.existsByUsernameIgnoreCase(user.getUsername()))
             throw new InvalidRequestException(user.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setContactList(new HashSet<>());
         saveUser(user);
         return getUserDto(user.getId());
     }
@@ -59,12 +60,12 @@ public class UserService {
         return findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
-    public User updateUser(UserDto userDto) {
+    public UserDto updateUser(UserDto userDto) {
         User updatedUser = getLoggedUser();
         updatedUser.setFirstName(userDto.getFirstName());
         updatedUser.setSurname(userDto.getSurname());
         saveUser(updatedUser);
-        return updatedUser;
+        return getUserDto(updatedUser.getId());
     }
 
     public void changePassword(PasswordDto password) {
@@ -78,7 +79,7 @@ public class UserService {
     }
 
     public void deleteUser() {
-            userRepository.deleteById(getLoggedUser().getId());
+        userRepository.deleteById(getLoggedUser().getId());
     }
 
     public User getUser(Long id) {
