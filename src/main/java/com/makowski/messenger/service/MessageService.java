@@ -58,6 +58,7 @@ public class MessageService {
     }
 
     public Message updateMessage(String content, Long messageId) {
+        if (content == null) throw new InvalidRequestException();
         if (content.isBlank()) throw new InvalidRequestException();
         isItProperLength(content.length());
         if (isItProperUser(messageId)) {
@@ -93,8 +94,7 @@ public class MessageService {
     }
 
     public boolean isItProperUser(Long messageId) {
-        if (userService.getLoggedUser().getId().equals(getMessage(messageId).getSenderId())) return true;
-        else return false;
+        return userService.getLoggedUser().getId().equals(getMessage(messageId).getSenderId());
     }
 
     public void isItProperLength(int length) {
