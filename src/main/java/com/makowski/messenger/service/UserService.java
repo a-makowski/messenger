@@ -70,12 +70,12 @@ public class UserService {
 
     public void changePassword(PasswordDto password) {
         User user = getLoggedUser();
-        if (bCryptPasswordEncoder.matches(password.getOldPassword(), user.getPassword())) {
-            if (password.getNewPassword().equals(password.getRepeatNewPassword())) {
-                user.setPassword(bCryptPasswordEncoder.encode(password.getNewPassword()));
-                saveUser(user);
-            } else throw new PasswordNotEqualsException();
-        } else throw new AccessDeniedException();
+        if (!bCryptPasswordEncoder.matches(password.getOldPassword(), user.getPassword()))
+            throw new AccessDeniedException();
+        if (!password.getNewPassword().equals(password.getRepeatNewPassword()))
+            throw new PasswordNotEqualsException();
+        user.setPassword(bCryptPasswordEncoder.encode(password.getNewPassword()));
+        saveUser(user);
     }
 
     public void deleteUser() {
@@ -109,7 +109,7 @@ public class UserService {
     }
 
     public Set<UserDto> findUser(String phrase) {
-        if (phrase.isBlank() || phrase.isEmpty()) throw new InvalidRequestException("Search phrase cannot be empty");
+        if (phrase.isBlank()) throw new InvalidRequestException("Search phrase cannot be empty");
         Set<UserDto> results = new HashSet<>();    
         for (User user : userRepository.findAll()) {
             String name = user.getUsername() + " " + user.getFirstName() + " " + user.getSurname();
@@ -122,25 +122,25 @@ public class UserService {
     }
 
     public Set<UserDto> addToContactList(Long contactId) {
-        if (userRepository.existsById(contactId)) {
-            User user = getLoggedUser();
-            if (!user.getId().equals(contactId)) {
-                user.getContactList().add(contactId);
-                saveUser(user);
-            } else throw new InvalidRequestException("Owner of the list cannot be on the list");
-        } else throw new EntityNotFoundException(contactId, User.class);
+        if (!userRepository.existsById(contactId))
+            throw new EntityNotFoundException(contactId, User.class);
+        User user = getLoggedUser();
+        if (user.getId().equals(contactId))
+            throw new InvalidRequestException("Owner of the list cannot be on the list");
+        user.getContactList().add(contactId);
+        saveUser(user);
         return getMyContactList();
     }
 
     public Set<UserDto> deleteFromContactList(Long contactId) {
-        if (userRepository.existsById(contactId)) {
-            User user = getLoggedUser();
-            if (user.getContactList().contains(contactId)) {
-                user.getContactList().remove(contactId);
-                saveUser(user);
-                return getMyContactList();
-            } else throw new InvalidRequestException("There is no such user on contact list");
-        } else throw new EntityNotFoundException(contactId, User.class);
+        if (!userRepository.existsById(contactId))
+            throw new EntityNotFoundException(contactId, User.class);
+        User user = getLoggedUser();
+        if (!user.getContactList().contains(contactId))
+            throw new InvalidRequestException("There is no such user on contact list");
+        user.getContactList().remove(contactId);
+        saveUser(user);
+        return getMyContactList();
     }
 
     public Set<UserDto> getMyContactList() {       
