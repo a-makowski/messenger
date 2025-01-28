@@ -6,6 +6,7 @@ import com.makowski.messenger.entity.User;
 import com.makowski.messenger.exception.AccessDeniedException;
 import com.makowski.messenger.exception.EntityNotFoundException;
 import com.makowski.messenger.repository.ChatRepository;
+import com.makowski.messenger.testutils.TestDataFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,31 +31,24 @@ class ChatServiceTest {
 
     @Test
     void getMyChat_ReturnsChat_WhenUserIsChatMember() {
-        User loggedUser = new User("username", "password", "firstName", "surname");
-        loggedUser.setId(1L);
+        User user = TestDataFactory.createTestUser();
+        Chat chat = TestDataFactory.createTestChat();
+        chat.getMembers().add(user);
 
-        Chat chat = new Chat();
-        chat.setId(1L);
-        chat.setMembers(new HashSet<>(Set.of(loggedUser)));
-
-        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        when(userService.getLoggedUser()).thenReturn(user);
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
 
         Chat result = chatService.getMyChat(1L);
 
-        assertEquals(1L, result.getId());
+        assertEquals(chat.getId(), result.getId());
     }
 
     @Test
     void getMyChat_ThrowsException_WhenUserIsNotChatMember() {
-        User loggedUser = new User("username", "password", "firstName", "surname");
-        loggedUser.setId(1L);
+        User user = TestDataFactory.createTestUser();
+        Chat chat = TestDataFactory.createTestChat();
 
-        Chat chat = new Chat();
-        chat.setId(1L);
-        chat.setMembers(new HashSet<>());
-
-        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        when(userService.getLoggedUser()).thenReturn(user);
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
 
         assertThrows(AccessDeniedException.class, () -> chatService.getMyChat(1L));
@@ -62,15 +56,12 @@ class ChatServiceTest {
 
     @Test
     void deleteChatIfExist_DeletesChat_WhenChatExistsAndUserIsChatMember() {
-        User loggedUser = new User("username", "password", "firstName", "surname");
-        loggedUser.setId(1L);
-
-        Chat chat = new Chat();
-        chat.setId(1L);
-        chat.setMembers(new HashSet<>(Set.of(loggedUser)));
+        User user = TestDataFactory.createTestUser();
+        Chat chat = TestDataFactory.createTestChat();
+        chat.getMembers().add(user);
 
         when(chatRepository.existsById(1L)).thenReturn(true);
-        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        when(userService.getLoggedUser()).thenReturn(user);
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
 
         chatService.deleteChatIfExist(1L);
@@ -87,15 +78,12 @@ class ChatServiceTest {
 
     @Test
     void deleteChatIfExist_ThrowsException_WhenUserIsNotChatMember() {
-        User loggedUser = new User("username", "password", "firstName", "surname");
-        loggedUser.setId(1L);
+        User user = TestDataFactory.createTestUser();
 
-        Chat chat = new Chat();
-        chat.setId(1L);
-        chat.setMembers(new HashSet<>());
+        Chat chat = TestDataFactory.createTestChat();
 
         when(chatRepository.existsById(1L)).thenReturn(true);
-        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        when(userService.getLoggedUser()).thenReturn(user);
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
 
         assertThrows(AccessDeniedException.class, () -> chatService.deleteChatIfExist(1L));
@@ -104,9 +92,7 @@ class ChatServiceTest {
 
     @Test
     void deleteChatIfEmpty_DeletesChat_WhenChatIsEmpty() {
-        Chat chat = new Chat();
-        chat.setId(1L);
-        chat.setMessages(new ArrayList<>());
+        Chat chat = TestDataFactory.createTestChat();
 
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
 
@@ -118,9 +104,8 @@ class ChatServiceTest {
     @Test
     void deleteChatIfEmpty_DoesNotDeleteChat_WhenChatIsNotEmpty() {
         Message message = new Message();
-        Chat chat = new Chat();
-        chat.setId(1L);
-        chat.setMessages(new ArrayList<>(List.of(message)));
+        Chat chat = TestDataFactory.createTestChat();
+        chat.getMessages().add(message);
 
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
 
@@ -131,35 +116,28 @@ class ChatServiceTest {
 
     @Test
     void isItProperUser_ReturnsTrue_WhenUserIsChatMember() {
-        User loggedUser = new User("username", "password", "firstName", "surname");
-        loggedUser.setId(1L);
+        User user = TestDataFactory.createTestUser();
+        Chat chat = TestDataFactory.createTestChat();
+        chat.getMembers().add(user);
 
-        Chat chat = new Chat();
-        chat.setId(1L);
-        chat.setMembers(new HashSet<>(Set.of(loggedUser)));
-
-        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        when(userService.getLoggedUser()).thenReturn(user);
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
 
-        Boolean result = chatService.isItProperUser(1L);
+        boolean result = chatService.isItProperUser(1L);
 
-        assertEquals(true, result);
+        assertTrue(result);
     }
 
     @Test
     void isItProperUser_ReturnsFalse_WhenUserIsNotChatMember() {
-        User loggedUser = new User("username", "password", "firstName", "surname");
-        loggedUser.setId(1L);
+        User user = TestDataFactory.createTestUser();
+        Chat chat = TestDataFactory.createTestChat();
 
-        Chat chat = new Chat();
-        chat.setId(1L);
-        chat.setMembers(new HashSet<>());
-
-        when(userService.getLoggedUser()).thenReturn(loggedUser);
+        when(userService.getLoggedUser()).thenReturn(user);
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
 
-        Boolean result = chatService.isItProperUser(1L);
+        boolean result = chatService.isItProperUser(1L);
 
-        assertEquals(false, result);
+        assertFalse(result);
     }
 }
