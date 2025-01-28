@@ -19,7 +19,7 @@ public class ChatService {
     private ChatRepository chatRepository;
     private UserService userService;    
 
-    public List<ChatDto> getMyChats() {        
+    public List<ChatDto> getMyChats() {
         return userService.getUsersChats();
     } 
 
@@ -29,28 +29,30 @@ public class ChatService {
     }
 
     public Chat getMyChat(Long chatId) {
-        if (isItProperUser(chatId)) return getChat(chatId);
-            else throw new AccessDeniedException();
+        if (!isItProperUser(chatId))
+            throw new AccessDeniedException();
+        return getChat(chatId);
     }
 
     public void saveChat(Chat chat) {
         chatRepository.save(chat);
     }
                                                                    
-    public void deleteChatIfExist(Long chatId) {                  
-        if (chatRepository.existsById(chatId)) {
-            if (isItProperUser(chatId)) deleteChat(chatId);
-                else throw new AccessDeniedException();
-        } else throw new EntityNotFoundException(chatId, Chat.class);    
+    public void deleteChatIfExist(Long chatId) {
+        if (!chatRepository.existsById(chatId))
+            throw new EntityNotFoundException(chatId, Chat.class);
+        if (!isItProperUser(chatId))
+            throw new AccessDeniedException();
+        deleteChat(chatId);
     }
 
-    public void deleteChatIfEmpty(Long chatId) { 
+    public void deleteChatIfEmpty(Long chatId) {
         if (getChat(chatId).getMessages().isEmpty()) {                   
             deleteChat(chatId);           
         }
     }
 
-    public void deleteChat(Long chatId) {                          
+    public void deleteChat(Long chatId) {
         chatRepository.deleteById(chatId); 
     }
 
