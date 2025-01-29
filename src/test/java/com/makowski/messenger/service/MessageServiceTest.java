@@ -309,11 +309,11 @@ class MessageServiceTest {
 
     @Test
     void isItProperLength_DoesNothing_WhenMessageIsNotTooLong() {
-        assertDoesNotThrow(() -> messageService.isItProperLength(200));
+        assertDoesNotThrow(() -> messageService.checkLength(200));
     }
 
     @Test
     void isItProperLength_ThrowsException_WhenMessageIsTooLong() {
-        assertThrows(InvalidRequestException.class, () -> messageService.isItProperLength(201));
+        assertThrows(InvalidRequestException.class, () -> messageService.checkLength(201));
     }
 }

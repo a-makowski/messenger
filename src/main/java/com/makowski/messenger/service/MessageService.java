@@ -27,16 +27,16 @@ public class MessageService {
     private ChatService chatService;
 
     public Message saveMessage(Message message) {
-        isItProperLength(message.getContent().length());
+        checkLength(message.getContent().length());
         User sender = userService.getLoggedUser();
         message.setSenderId(sender.getId());
         Set<User> members = new HashSet<>();
         for (Long id : message.getReceiverId()) {
             if (!id.equals(message.getSenderId())) {
-                if (userService.existsById(id)) {
-                    User user = userService.getUser(id);
-                    members.add(user);
-                } else throw new EntityNotFoundException(id, User.class);
+                if (!userService.existsById(id))
+                    throw new EntityNotFoundException(id, User.class);
+                User user = userService.getUser(id);
+                members.add(user);
             }
         }
         if (members.isEmpty()) throw new NoReceiversException();
@@ -60,21 +60,19 @@ public class MessageService {
     public Message updateMessage(String content, Long messageId) {
         if (content == null) throw new InvalidRequestException();
         if (content.isBlank()) throw new InvalidRequestException();
-        isItProperLength(content.length());
-        if (isItProperUser(messageId)) {
-            Message updatedMessage = getMessage(messageId);
-            updatedMessage.setContent(content);
-            updatedMessage.setDateTime(LocalDateTime.now());
-            return messageRepository.save(updatedMessage);
-        } throw new AccessDeniedException();
+        checkLength(content.length());
+        if (!isItProperUser(messageId)) throw new AccessDeniedException();
+        Message updatedMessage = getMessage(messageId);
+        updatedMessage.setContent(content);
+        updatedMessage.setDateTime(LocalDateTime.now());
+        return messageRepository.save(updatedMessage);
     }
 
     public Message changeFlag(Long messageId) {
-        if (isItProperUser(messageId)) {
-            Message updatedMessage = getMessage(messageId);
-            updatedMessage.setPermanent(!updatedMessage.isPermanent());
-            return messageRepository.save(updatedMessage);
-        } else throw new AccessDeniedException();
+        if (!isItProperUser(messageId)) throw new AccessDeniedException();
+        Message updatedMessage = getMessage(messageId);
+        updatedMessage.setPermanent(!updatedMessage.isPermanent());
+        return messageRepository.save(updatedMessage);
     }
 
     public void deleteMessage(Long id) {
@@ -84,8 +82,8 @@ public class MessageService {
     }
 
     public void deleteMyMessage(Long messageId) {
-        if (isItProperUser(messageId)) deleteMessage(messageId);
-            else throw new AccessDeniedException();
+        if (!isItProperUser(messageId)) throw new AccessDeniedException();
+        deleteMessage(messageId);
     }
 
     public Message getMessage(Long id) {
@@ -97,7 +95,7 @@ public class MessageService {
         return userService.getLoggedUser().getId().equals(getMessage(messageId).getSenderId());
     }
 
-    public void isItProperLength(int length) {
+    public void checkLength(int length) {
         if (length > Constants.MAX_MSG_LENGTH) throw new InvalidRequestException(length - Constants.MAX_MSG_LENGTH);
     }
 }
