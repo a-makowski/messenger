@@ -51,8 +51,6 @@ class MessageServiceTest {
         verify(chatService).saveChat(any());
     }
 
-    //ToDo add new test: new message for existing chat
-
     @Test
     void saveMessage_ThrowsException_WhenMessageIsTooLong() {
         String content = "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789abcd";
