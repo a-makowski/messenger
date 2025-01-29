@@ -8,6 +8,7 @@ import com.makowski.messenger.exception.EntityNotFoundException;
 import com.makowski.messenger.exception.InvalidRequestException;
 import com.makowski.messenger.exception.NoReceiversException;
 import com.makowski.messenger.repository.MessageRepository;
+import com.makowski.messenger.testutils.TestDataFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,19 +33,10 @@ class MessageServiceTest {
     ChatService chatService;
 
     @Test
-    void saveMessage_ReturnsMessageAndAddsNewChat_WhenMessageIsSuccessfullyCreated() {
-        User user = new User();
-        user.setId(1L);
-        user.setChats(new ArrayList<>());
-
-        User receiver = new User();
-        receiver.setId(2L);
-
-        Message message = new Message();
-        message.setContent("content");
-        message.setId(1L);
-        message.setSenderId(1L);
-        message.setReceiverId(Set.of(2L));
+    void saveMessage_ReturnsMessageAndAddsNewChat_WhenMessageIsSuccessfullyCreatedAndNewChatIsNeeded() {
+        User user = TestDataFactory.createTestUser();
+        User receiver = TestDataFactory.createAnotherTestUser();
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(userService.existsById(2L)).thenReturn(true);
@@ -53,15 +45,18 @@ class MessageServiceTest {
 
         Message result = messageService.saveMessage(message);
 
-        assertEquals("content", result.getContent());
+        assertEquals(message.getContent(), result.getContent());
         assertEquals(2, result.getChat().getMembers().size());
         verify(messageRepository).save(message);
+        verify(chatService).saveChat(any());
     }
+
+    //ToDo add new test: new message for existing chat
 
     @Test
     void saveMessage_ThrowsException_WhenMessageIsTooLong() {
         String content = "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789abcd";
-        Message message = new Message();
+        Message message = TestDataFactory.createTestMessage();
         message.setContent(content);
 
         assertThrows(InvalidRequestException.class, () -> messageService.saveMessage(message));
@@ -69,13 +64,8 @@ class MessageServiceTest {
 
     @Test
     void saveMessage_ThrowsException_WhenReceiverDoesNotExist() {
-        User user = new User();
-        user.setId(1L);
-
-        Message message = new Message();
-        message.setContent("content");
-        message.setId(1L);
-        message.setReceiverId(Set.of(2L));
+        User user = TestDataFactory.createTestUser();
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(userService.existsById(2L)).thenReturn(false);
@@ -85,12 +75,8 @@ class MessageServiceTest {
 
     @Test
     void saveMessage_ThrowsException_WhenThereIsNoReceiver() {
-        User user = new User();
-        user.setId(1L);
-
-        Message message = new Message();
-        message.setContent("content");
-        message.setId(1L);
+        User user = TestDataFactory.createTestUser();
+        Message message = TestDataFactory.createTestMessage();
         message.setReceiverId(new HashSet<>());
 
         when(userService.getLoggedUser()).thenReturn(user);
@@ -100,26 +86,22 @@ class MessageServiceTest {
 
     @Test
     void updateMessage_ReturnsMessage_WhenSuccessfullyUpdated() {
-        User user = new User();
-        user.setId(1L);
-
-        Message message = new Message();
-        message.setId(1L);
-        message.setSenderId(1L);
+        User user = TestDataFactory.createTestUser();
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
         when(messageRepository.save(message)).thenReturn(message);
 
-        Message result = messageService.updateMessage("abcd", 1L);
+        Message result = messageService.updateMessage("update test", 1L);
 
-        assertEquals("abcd", result.getContent());
+        assertEquals("update test", result.getContent());
         verify(messageRepository).save(message);
     }
 
     @Test
     void updateMessage_ThrowsException_WhenNoContent() {
-        assertThrows(InvalidRequestException.class, () -> messageService.updateMessage("", 1L));
+        assertThrows(InvalidRequestException.class, () -> messageService.updateMessage(null, 1L));
     }
 
     @Test
@@ -135,39 +117,30 @@ class MessageServiceTest {
 
     @Test
     void updateMessage_ThrowsException_WhenUserIsNotSender() {
-        User user = new User();
-        user.setId(1L);
-
-        Message message = new Message();
-        message.setId(1L);
-        message.setSenderId(2L);
+        User user = TestDataFactory.createAnotherTestUser();
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
 
-        assertThrows(AccessDeniedException.class, () -> messageService.updateMessage("abcd", 1L));
+        assertThrows(AccessDeniedException.class, () -> messageService.updateMessage("update test", 1L));
     }
 
     @Test
     void updateMessage_ThrowsException_WhenMessageDoesNotExist() {
-        User user = new User();
-        user.setId(1L);
+        User user = TestDataFactory.createTestUser();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> messageService.updateMessage("abcd", 1L));
+        assertThrows(EntityNotFoundException.class, () -> messageService.updateMessage("update test", 1L));
     }
 
     @Test
     void changeFlag_ReturnsMessage_WhenSuccessfullyUpdated() {
-        User user = new User();
-        user.setId(1L);
+        User user = TestDataFactory.createTestUser();
 
-        Message message = new Message();
-        message.setId(1L);
-        message.setSenderId(1L);
-        message.setPermanent(false);
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
@@ -180,12 +153,8 @@ class MessageServiceTest {
 
     @Test
     void changeFlag_ThrowsException_WhenUserIsNotSender() {
-        User user = new User();
-        user.setId(1L);
-
-        Message message = new Message();
-        message.setId(1L);
-        message.setSenderId(2L);
+        User user = TestDataFactory.createAnotherTestUser();
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
@@ -195,8 +164,7 @@ class MessageServiceTest {
 
     @Test
     void changeFlag_ThrowsException_WhenMessageDoesNotExist() {
-        User user = new User();
-        user.setId(1L);
+        User user = TestDataFactory.createTestUser();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.empty());
@@ -206,11 +174,8 @@ class MessageServiceTest {
 
     @Test
     void deleteMessage_DeletesMessage_WhenMessageExists() {
-        Chat chat = new Chat();
-        chat.setId(1L);
-
-        Message message = new Message();
-        message.setId(1L);
+        Chat chat = TestDataFactory.createTestChat();
+        Message message = TestDataFactory.createTestMessage();
         message.setChat(chat);
 
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
@@ -229,15 +194,9 @@ class MessageServiceTest {
 
     @Test
     void deleteMyMessage_DeletesMessage_WhenMessageExistAndUserIsSender() {
-        User user = new User();
-        user.setId(1L);
-
-        Chat chat = new Chat();
-        chat.setId(1L);
-
-        Message message = new Message();
-        message.setId(1L);
-        message.setSenderId(1L);
+        User user = TestDataFactory.createTestUser();
+        Chat chat = TestDataFactory.createTestChat();
+        Message message = TestDataFactory.createTestMessage();
         message.setChat(chat);
 
         when(userService.getLoggedUser()).thenReturn(user);
@@ -249,8 +208,7 @@ class MessageServiceTest {
 
     @Test
     void deleteMyMessage_ThrowsException_WhenMessageDoesNotExist() {
-        User user = new User();
-        user.setId(1L);
+        User user = TestDataFactory.createTestUser();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.empty());
@@ -260,12 +218,8 @@ class MessageServiceTest {
 
     @Test
     void deleteMyMessage_ThrowsException_WhenUserIsNotSender() {
-        User user = new User();
-        user.setId(1L);
-
-        Message message = new Message();
-        message.setId(1L);
-        message.setSenderId(2L);
+        User user = TestDataFactory.createAnotherTestUser();
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
@@ -275,45 +229,37 @@ class MessageServiceTest {
 
     @Test
     void isItProperUser_ReturnsTrue_WhenUserIsSender() {
-        User user = new User();
-        user.setId(1L);
-
-        Message message = new Message();
-        message.setId(1L);
-        message.setSenderId(1L);
+        User user = TestDataFactory.createTestUser();
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
 
-        Boolean result = messageService.isItProperUser(1L);
+        boolean result = messageService.isItProperUser(1L);
 
-        assertEquals(true, result);
+        assertTrue(result);
     }
 
     @Test
     void isItProperUser_ReturnsFalse_WhenUserIsNotSender() {
-        User user = new User();
-        user.setId(1L);
-
-        Message message = new Message();
-        message.setId(1L);
-        message.setSenderId(2L);
+        User user = TestDataFactory.createAnotherTestUser();
+        Message message = TestDataFactory.createTestMessage();
 
         when(userService.getLoggedUser()).thenReturn(user);
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
 
-        Boolean result = messageService.isItProperUser(1L);
+        boolean result = messageService.isItProperUser(1L);
 
-        assertEquals(false, result);
+        assertFalse(result);
     }
 
     @Test
-    void isItProperLength_DoesNothing_WhenMessageIsNotTooLong() {
+    void checkLength_DoesNothing_WhenMessageIsNotTooLong() {
         assertDoesNotThrow(() -> messageService.checkLength(200));
     }
 
     @Test
-    void isItProperLength_ThrowsException_WhenMessageIsTooLong() {
+    void checkLength_ThrowsException_WhenMessageIsTooLong() {
         assertThrows(InvalidRequestException.class, () -> messageService.checkLength(201));
     }
 }
